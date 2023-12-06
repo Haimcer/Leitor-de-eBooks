@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:leitor_ebooks/pages/home/home_page.dart';
+import 'package:leitor_ebooks/pages/home/home_page_principal.dart';
 import 'package:provider/provider.dart';
 import 'globals/theme_controller.dart';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:leitor_ebooks/pages/home/home_page_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../globals/globals_functions.dart';
@@ -66,41 +67,32 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
-        title: Text(widget.title,
-            style: TextStyle(
-                color: globalsThemeVar.iGlobalsColors.textColorForte)),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
+      body: Stack(
+        //usado para que o carregamento feito depois que a página foi aberta fique sempre por cima
+        children: [
+          SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: HomeWidget(context).homePerfilPricipal(context)
+              // carregando //verificador para ficar na tela de loading enquanto a pagina esta sendo carregada
+              //     ? GlobalsLoadingWidget(context).loagingPageInicio(
+              //         MediaQuery.of(context).size.height,
+              //         MediaQuery.of(context).size.width)
+              //     :
+              ),
+          // Observer(builder: (_) {
+          //   return Visibility(
+          //       visible: globalsStore.loading,
+          //       child: GlobalsLoadingWidget(context).loagingPageInicio(
+          //           MediaQuery.of(context).size.height,
+          //           MediaQuery.of(context).size.width));
+          // }),
+        ],
       ),
     );
   }
