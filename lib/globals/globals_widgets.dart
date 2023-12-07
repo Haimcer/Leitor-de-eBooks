@@ -111,13 +111,13 @@ class GlobalsWidgets {
     );
   }
 
-  Widget loading() {
+  Widget loading({double? size}) {
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
     return Center(
       child: LoadingAnimationWidget.twistingDots(
         leftDotColor: globalsThemeVar.iGlobalsColors.primaryColor,
         rightDotColor: globalsThemeVar.iGlobalsColors.secundaryColor,
-        size: 70,
+        size: size ?? 70,
       ),
     );
   }

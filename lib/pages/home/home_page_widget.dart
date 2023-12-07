@@ -1,14 +1,19 @@
-import 'dart:convert';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:leitor_ebooks/globals/globals_local_storage.dart';
 import 'package:leitor_ebooks/globals/globals_styles.dart';
+import 'package:leitor_ebooks/globals/globals_widgets.dart';
 import 'package:leitor_ebooks/pages/home/home_page_functions.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:provider/provider.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import '../../globals/globals_sizes.dart';
 import '../../globals/store/globals_store.dart';
+import '../../globals/theme_controller.dart';
 import '../../modals/modal_livro.dart';
 
 class HomeWidget {
@@ -46,93 +51,153 @@ class HomeWidget {
   }
 
   Widget _buildLivroCard(LivrosModal livro, BuildContext contextAux) {
-    final homeStore = Provider.of<HomeStore>(context);
     final homePrincipalFunctions = Provider.of<HomePrincipalFunctions>(context);
     final globalsStore = Provider.of<GlobalsStore>(context);
+    final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
 
     return Observer(builder: (_) {
-      return GestureDetector(
-        onTap: () async {
-          await homePrincipalFunctions.download(livro);
-          print('olha aqui');
-          print(homeStore.filepath);
-          if (!globalsStore.loading) {
-            VocsyEpub.setConfig(
-              themeColor: Theme.of(context).primaryColor,
-              identifier: 'isbook',
-              scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-              allowSharing: true,
-              enableTts: true,
-              nightMode: true,
-            );
-
-            if (homeStore.filepath != '') {
-              VocsyEpub.open(
-                homeStore.filepath,
-                lastLocation: EpubLocator.fromJson({
-                  "bookId": "2239",
-                  "href": "/OEBPS/ch06.xhtml",
-                  "created": 1539934158390,
-                  "locations": {"cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"}
-                }),
+      return IgnorePointer(
+        ignoring: livro.loading ?? false,
+        child: GestureDetector(
+          onTap: () async {
+            livro.setLoading(true);
+            final result = await GlobalsLocalStorage()
+                .getLocalDirectory(livro.downloadUrl ?? '');
+            print('object');
+            print(result);
+            await homePrincipalFunctions.download(livro);
+            if (!globalsStore.loading) {
+              VocsyEpub.setConfig(
+                themeColor: Theme.of(context).primaryColor,
+                identifier: 'isbook',
+                scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+                allowSharing: true,
+                enableTts: true,
+                nightMode: true,
               );
+
+              if (livro.isDownloadOk ?? false) {
+                VocsyEpub.open(
+                  livro.localDirectory ?? '',
+                  lastLocation: EpubLocator.fromJson({
+                    "bookId": "2239",
+                    "href": "/OEBPS/ch06.xhtml",
+                    "created": 1539934158390,
+                    "locations": {"cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"}
+                  }),
+                );
+              }
             }
-          }
-        },
-        child: Container(
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(GlobalsSizes().borderSize),
-            ),
-            elevation: 2.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(GlobalsSizes().borderSize),
-                      topRight: Radius.circular(GlobalsSizes().borderSize),
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: livro.coverUrl ?? '',
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder: (context, url, progress) {
-                        // Exibe o indicador de carregamento enquanto a imagem está sendo carregada
-                        return Center(
-                          child: CircularProgressIndicator(
-                            value: progress.progress,
+            livro.setLoading(false);
+            if (result != '') {
+              livro.setIsDownloadOk(true);
+            } else {
+              livro.setIsDownloadOk(false);
+            }
+          },
+          child: Container(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(GlobalsSizes().borderSize),
+              ),
+              elevation: 2.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        // Imagem carregada da rede
+                        Container(
+                          height: 500, // Defina a altura desejada
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft:
+                                  Radius.circular(GlobalsSizes().borderSize),
+                              topRight:
+                                  Radius.circular(GlobalsSizes().borderSize),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: livro.coverUrl ?? '',
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                // Exibe um widget de erro se houver problemas no carregamento da imagem
+                                return GlobalsWidgets(context)
+                                    .loading(size: 25);
+                              },
+                            ),
                           ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        // Exibe um widget de erro se houver problemas no carregamento da imagem
-                        return Center(
-                          child: Icon(Icons.error),
-                        );
-                      },
+                        ),
+                        // Máscara escura
+                        Opacity(
+                          opacity: livro.loading ?? false ? 0.5 : 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.only(
+                                topLeft:
+                                    Radius.circular(GlobalsSizes().borderSize),
+                                topRight:
+                                    Radius.circular(GlobalsSizes().borderSize),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: GlobalsSizes().marginSize / 2,
+                            right: GlobalsSizes().marginSize / 2,
+                            top: GlobalsSizes().marginSize / 4,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.circleCheck,
+                                color: livro.isDownloadOk ?? false
+                                    ? Colors.green.withOpacity(1)
+                                    : Colors.green.withOpacity(0),
+                              ),
+                              Icon(
+                                FontAwesomeIcons.bookmark,
+                                color: globalsThemeVar
+                                    .iGlobalsColors.textColorFraco,
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Indicador de progresso
+                        livro.loading ?? false
+                            ? Observer(
+                                builder: (context) {
+                                  return GlobalsWidgets(context)
+                                      .loading(size: 25);
+                                },
+                              )
+                            : Container(),
+                      ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        livro.title ?? '',
-                        style: GlobalsStyles(context).styleSubtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        livro.author ?? '',
-                        style: GlobalsStyles(context).styleMenor,
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          livro.title ?? '',
+                          style: GlobalsStyles(context).styleSubtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          livro.author ?? '',
+                          style: GlobalsStyles(context).styleMenor,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

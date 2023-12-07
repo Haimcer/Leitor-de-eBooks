@@ -23,20 +23,27 @@ abstract class _HomeStore with Store {
   }
 
   @action
-  void setAllListMobX(ObservableList<LivrosModal> list) => listModelMobX = list;
+  void setAllListMobX(List<LivrosModal> list) {
+    listModelMobX.clear();
+    listModelMobX.addAll(list);
+  }
 
   @action
   void listReload() {
-    final list = listModelMobX;
-    setListModelMobXClear();
+    final list = List<LivrosModal>.from(listModelMobX);
+    listModelMobX.clear();
     setAllListMobX(list);
   }
 
   @action
-  void setListModelMobX(LivrosModal ficha) => listModelMobX.add(ficha);
+  void setListModelMobX(LivrosModal ficha) {
+    listModelMobX.add(ficha);
+  }
 
   @action
-  void setListModelMobXClear() => listModelMobX.clear();
+  void setListModelMobXClear() {
+    listModelMobX.clear();
+  }
 
   @action
   void setProgress(double value) {

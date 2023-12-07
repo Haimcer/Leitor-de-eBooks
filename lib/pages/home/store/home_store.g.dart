@@ -25,6 +25,38 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$progressAtom =
+      Atom(name: '_HomeStore.progress', context: context);
+
+  @override
+  double get progress {
+    _$progressAtom.reportRead();
+    return super.progress;
+  }
+
+  @override
+  set progress(double value) {
+    _$progressAtom.reportWrite(value, super.progress, () {
+      super.progress = value;
+    });
+  }
+
+  late final _$listModelMobXAtom =
+      Atom(name: '_HomeStore.listModelMobX', context: context);
+
+  @override
+  ObservableList<LivrosModal> get listModelMobX {
+    _$listModelMobXAtom.reportRead();
+    return super.listModelMobX;
+  }
+
+  @override
+  set listModelMobX(ObservableList<LivrosModal> value) {
+    _$listModelMobXAtom.reportWrite(value, super.listModelMobX, () {
+      super.listModelMobX = value;
+    });
+  }
+
   late final _$_HomeStoreActionController =
       ActionController(name: '_HomeStore', context: context);
 
@@ -40,9 +72,66 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void setAllListMobX(List<LivrosModal> list) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setAllListMobX');
+    try {
+      return super.setAllListMobX(list);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void listReload() {
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.listReload');
+    try {
+      return super.listReload();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setListModelMobX(LivrosModal ficha) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setListModelMobX');
+    try {
+      return super.setListModelMobX(ficha);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setListModelMobXClear() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setListModelMobXClear');
+    try {
+      return super.setListModelMobXClear();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setProgress(double value) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.setProgress');
+    try {
+      return super.setProgress(value);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-filepath: ${filepath}
+filepath: ${filepath},
+progress: ${progress},
+listModelMobX: ${listModelMobX}
     ''';
   }
 }

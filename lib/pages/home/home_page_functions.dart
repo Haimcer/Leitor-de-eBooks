@@ -3,6 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:leitor_ebooks/globals/globals_local_storage.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:leitor_ebooks/request/livros/getAllLivros.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,24 +17,24 @@ class HomePrincipalFunctions {
 
   late HomeStore homeStoreAux;
   late GlobalsStore globalsStoreAux;
-
   bool loading = false;
   Dio dio = Dio();
   String filePath = "";
 
   Future homeFunctionPrincipal(
       GlobalsStore globalsStore, HomeStore homeStore) async {
-    homeStore.setListModelMobXClear();
     globalsStoreAux = globalsStore;
     homeStoreAux = homeStore;
-    try {
-      var result = await GetAllLivros().getLivros(context);
-      if (result != null) {
-        await result.forEach((value) {
-          homeStore.setListModelMobX(LivrosModal.fromJson(value));
-        });
-      }
-    } catch (e) {}
+    if (homeStore.listModelMobX.isEmpty) {
+      try {
+        var result = await GetAllLivros().getLivros(context);
+        if (result != null) {
+          await result.forEach((value) {
+            homeStore.setListModelMobX(LivrosModal.fromJson(value));
+          });
+        }
+      } catch (e) {}
+    }
   }
 
   /// ANDROID VERSION
@@ -86,18 +87,17 @@ class HomePrincipalFunctions {
         path,
         deleteOnError: true,
         onReceiveProgress: (receivedBytes, totalBytes) {
-          globalsStoreAux.setLoading(true);
+          livro?.setLoading(true);
           double progress = receivedBytes / totalBytes;
           homeStoreAux.setProgress(progress);
-          print(progress);
         },
       ).whenComplete(() {
-        homeStoreAux.setFilePath(path);
-        globalsStoreAux.setLoading(false);
+        livro?.setLocalDirectory(path);
+        // livro?.setLoading(false);
       });
     } else {
-      homeStoreAux.setFilePath(path);
-      globalsStoreAux.setLoading(false);
+      livro?.setLocalDirectory(path);
+      // livro?.setLoading(false);
     }
   }
 

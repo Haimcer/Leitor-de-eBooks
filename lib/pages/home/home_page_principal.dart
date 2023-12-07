@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../globals/store/globals_store.dart';
 import '../../globals/theme_controller.dart';
 import 'home_page_functions.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
