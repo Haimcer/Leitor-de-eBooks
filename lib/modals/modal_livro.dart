@@ -5,6 +5,7 @@ class LivrosModal {
   String? coverUrl;
   String? downloadUrl;
   bool? favorite;
+  bool? loading;
 
   LivrosModal({
     this.id,
@@ -13,6 +14,7 @@ class LivrosModal {
     this.coverUrl,
     this.downloadUrl,
     this.favorite,
+    this.loading,
   });
 
   LivrosModal.fromJson(Map<dynamic, dynamic> json) {

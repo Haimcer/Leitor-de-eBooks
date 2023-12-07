@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leitor_ebooks/globals/globals_sizes.dart';
 import 'package:leitor_ebooks/globals/globals_styles.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'theme_controller.dart';
 
@@ -107,6 +108,17 @@ class GlobalsWidgets {
       color: globalsThemeVar.iGlobalsColors.textColorMedio,
       endIndent: GlobalsSizes().marginSize,
       indent: GlobalsSizes().marginSize,
+    );
+  }
+
+  Widget loading() {
+    final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
+    return Center(
+      child: LoadingAnimationWidget.twistingDots(
+        leftDotColor: globalsThemeVar.iGlobalsColors.primaryColor,
+        rightDotColor: globalsThemeVar.iGlobalsColors.secundaryColor,
+        size: 70,
+      ),
     );
   }
 

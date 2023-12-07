@@ -79,7 +79,7 @@ class _TabBarPrincipalState extends State<TabBarPrincipal> {
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
     double appBarHeight = MediaQuery.of(context).size.height / 4;
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 0,
       length: 2,
       child: Scaffold(
         appBar: PreferredSize(
