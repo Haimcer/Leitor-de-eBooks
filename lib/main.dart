@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:leitor_ebooks/pages/home/home_page_principal.dart';
+import 'package:leitor_ebooks/pages/home/home_page_functions.dart';
+import 'package:leitor_ebooks/pages/tabBar/tab_principal.dart';
 import 'package:provider/provider.dart';
 import 'globals/theme_controller.dart';
 
@@ -7,6 +8,9 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        Provider<HomePrincipalFunctions>(
+          create: (context) => HomePrincipalFunctions(context),
+        ),
         Provider<GlobalsThemeVar>(
           create: (context) => GlobalsThemeVar(),
         ),
@@ -29,9 +33,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage(
-          title: 'deu certo',
-        ),
+        home: TabBarPrincipal(),
       ),
     );
   }

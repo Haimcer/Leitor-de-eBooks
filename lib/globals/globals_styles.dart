@@ -10,6 +10,7 @@ class GlobalsStyles {
   late TextStyle styleSubtitle;
   late TextStyle styleMedio;
   late TextStyle styleMenor;
+  late dynamic negritoFont;
 
   GlobalsStyles(this.context)
       : globalsThemeVar = Provider.of<GlobalsThemeVar>(context, listen: false) {
@@ -17,13 +18,15 @@ class GlobalsStyles {
         color: globalsThemeVar.iGlobalsColors.primaryColor,
         fontSize: GlobalsSizes().sizeTitulo);
     styleSubtitle = TextStyle(
+        fontWeight: FontWeight.w500,
         color: globalsThemeVar.iGlobalsColors.textColorForte,
         fontSize: GlobalsSizes().sizeSubtitulo);
     styleMedio = TextStyle(
         color: globalsThemeVar.iGlobalsColors.textColorForte,
         fontSize: GlobalsSizes().sizeTextMedio);
-    styleMedio = TextStyle(
+    styleMenor = TextStyle(
         color: globalsThemeVar.iGlobalsColors.textColorForte,
         fontSize: GlobalsSizes().sizeText);
+    negritoFont = FontWeight.w500;
   }
 }

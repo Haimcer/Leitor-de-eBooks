@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leitor_ebooks/globals/globals_sizes.dart';
+import 'package:leitor_ebooks/globals/globals_styles.dart';
 import 'package:provider/provider.dart';
 import 'theme_controller.dart';
 
@@ -109,72 +110,95 @@ class GlobalsWidgets {
     );
   }
 
-  Widget topImageWithBlur({
-    Widget? widgetCenter,
-    Widget? widgetTopLeft,
-    Widget? widgetTopRight,
-    Widget? widgetTopCenter,
-    String? imageBackGround,
-    double? height,
-    double? bottomRight,
-    double? bottomLeft,
-    bool? mascara,
-  }) {
-    return Stack(
-      children: [
-        Container(
-          height: height ?? GlobalsSizes().marginSize * 7,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              image: imageBackGround != null
-                  ? DecorationImage(
-                      image: NetworkImage(
-                        imageBackGround,
-                      ),
+  Widget appBarDescTitulo(BuildContext contextAux,
+      {double? sizeH,
+      double? sizeW,
+      Widget? prefixWidget,
+      Widget? sufixWidget,
+      String? titulo,
+      String? descTitulo,
+      double? marginBottomTitle,
+      String? urlImg}) {
+    // final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
+    final sizeMediaQ = MediaQuery.of(contextAux).size;
+    return SizedBox(
+      height: sizeH ?? sizeMediaQ.width / 2.5,
+      width: sizeW ?? sizeMediaQ.width,
+      child: Stack(
+        children: [
+          Container(
+            height: sizeH ?? sizeMediaQ.width / 2.5,
+            width: sizeW ?? sizeMediaQ.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(GlobalsSizes().borderSize * 2.5)),
+              image: urlImg == null || urlImg == 'null'
+                  ? const DecorationImage(
+                      image: AssetImage("assets/img_capa.jpg"),
                       fit: BoxFit.cover,
                     )
-                  : const DecorationImage(
-                      image: AssetImage(
-                        'assets/img_capa.jpg',
-                      ),
+                  : DecorationImage(
+                      image: NetworkImage(urlImg),
                       fit: BoxFit.cover,
                     ),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(
-                    bottomRight ?? GlobalsSizes().borderSize * 3),
-                bottomLeft: Radius.circular(
-                    bottomLeft ?? GlobalsSizes().borderSize * 3),
-              )),
-          child: mascara ?? true
-              ? Container(
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.only(
-                        bottomRight:
-                            Radius.circular(GlobalsSizes().borderSize * 3),
-                        bottomLeft:
-                            Radius.circular(GlobalsSizes().borderSize * 3),
-                      )),
-                )
-              : Container(),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: GlobalsSizes().marginSize,
-              vertical: GlobalsSizes().marginSize / 2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                  margin: EdgeInsets.only(top: GlobalsSizes().marginSize / 3),
-                  child: widgetTopLeft ?? Container()),
-              widgetTopCenter ?? Container(),
-              widgetTopRight ?? Container(),
-            ],
+            ),
           ),
-        ),
-        widgetCenter ?? Container(),
-      ],
+          Container(
+            height: sizeH ?? sizeMediaQ.width / 2.5,
+            width: sizeW ?? sizeMediaQ.width,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(GlobalsSizes().borderSize * 2.5)),
+                color: Colors.black54),
+          ),
+          Container(
+            margin: EdgeInsets.all(GlobalsSizes().marginSize),
+            child: Column(
+              children: [
+                prefixWidget == null && sufixWidget == null
+                    ? Container()
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          prefixWidget ?? Container(),
+                          sufixWidget ?? Container(),
+                        ],
+                      ),
+                Expanded(
+                  child: titulo == null
+                      ? Container()
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              descTitulo ?? '',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: GlobalsSizes().sizeTextMedio,
+                                //fontWeight: GlobalsStyles().negritoFont,
+                              ),
+                            ),
+                            Text(
+                              titulo,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: GlobalsSizes().sizeSubtitulo,
+                                fontWeight: GlobalsStyles(context).negritoFont,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                ),
+                SizedBox(
+                  height: marginBottomTitle ?? 0,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
