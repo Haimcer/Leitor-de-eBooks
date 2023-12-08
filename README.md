@@ -33,5 +33,5 @@ Este aplicativo de leitura de eBooks oferece uma experiência interativa e fáci
 
 ---
 
-**Desenvolvido por [Allan](https://github.com/Haymcer)**
+**Desenvolvido por [Allan](https://github.com/Haimcer)**
 
