@@ -96,6 +96,7 @@ class _TabBarPrincipalState extends State<TabBarPrincipal> {
         initialIndex: 0,
         length: 2,
         child: Scaffold(
+          backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(appBarHeight),
             child: GlobalsWidgets(context)
