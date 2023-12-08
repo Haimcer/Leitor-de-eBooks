@@ -8,7 +8,7 @@ Este aplicativo de leitura de eBooks oferece uma experiência interativa e fáci
 
 ## Configuração e Execução
 
-1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-repositorio.git`
+1. Clone o repositório: `git clone https://github.com/Haimcer/Leitor-de-eBooks.git`
 2. Instale as dependências: `flutter pub get`
 3. Execute o aplicativo: `flutter run`
 
