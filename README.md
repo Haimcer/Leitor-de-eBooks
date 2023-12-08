@@ -1,16 +1,37 @@
-# leitor_ebooks
+# Leitor eBooks
 
-A new Flutter project.
+Leitor de eBooks - Desafio Técnico
 
-## Getting Started
+## Descrição
 
-This project is a starting point for a Flutter application.
+Este aplicativo de leitura de eBooks oferece uma experiência interativa e fácil de usar. Ele permite baixar uma lista de livros, salvar livros favoritos e iniciar a leitura dos mesmos usando o plugin Vocsy Epub Viewer.
 
-A few resources to get you started if this is your first Flutter project:
+## Configuração e Execução
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. Clone o repositório: `git clone https://github.com/seu-usuario/seu-repositorio.git`
+2. Instale as dependências: `flutter pub get`
+3. Execute o aplicativo: `flutter run`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Estrutura do Projeto
+
+- `/lib`
+  - `/pages`
+    - `home_page_principal.dart` (Página principal)
+    - `home_page_functions.dart` (Funcionalidades da página principal)
+    - `home_page_widgets.dart` (Widgets da página principal)
+  - `/favorites`
+    - `favorites_page_principal.dart` (Página de favoritos)
+    - ...
+
+## Histórico de Commits
+
+- Veja o [histórico de commits](https://github.com/Haymcer/Leitor-de-eBooks/commits/main) para acompanhar as mudanças no código.
+
+## APK para Testes
+
+- O arquivo APK da versão final do projeto está disponível na raiz do projeto com o nome leitor_ebook.apk
+
+---
+
+**Desenvolvido por [Allan](https://github.com/Haymcer)**
+
