@@ -58,6 +58,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return RefreshIndicator(
       color: globalsThemeVar.iGlobalsColors.primaryColor,
       onRefresh: () async {
+        favoriteStore.setListModelFavoriteMobXClear();
         await favoritePrincipalFunction.favoritePrincipalFunction(
             globalsStore, favoriteStore, homeStore);
       },

@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         color: globalsThemeVar.iGlobalsColors.primaryColor,
         onRefresh: () async {
+          homeStore.setListModelMobXClear();
           await homePrincipalFunctions.homeFunctionPrincipal(
               globalsStore, homeStore);
         },
