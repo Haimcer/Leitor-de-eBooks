@@ -12,6 +12,17 @@ class GlobalsLocalStorage {
     await prefs.setStringList('listFavorites', listFavorite);
   }
 
+  Future<List<String>?> getDownloads() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String>? listDownloads = prefs.getStringList('Downloads');
+    return listDownloads;
+  }
+
+  Future<void> setDawmloads({required List<String> listDownloads}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('Downloads', listDownloads);
+  }
+
   Future<void> setLocalDirectory(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, value);

@@ -11,9 +11,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../globals/store/globals_store.dart';
 import '../../modals/modal_livro.dart';
 
-class HomePrincipalFunctions {
+class FavoritePrincipaFunctions {
   BuildContext context;
-  HomePrincipalFunctions(this.context);
+  FavoritePrincipaFunctions(this.context);
 
   late HomeStore homeStoreAux;
   late GlobalsStore globalsStoreAux;
@@ -23,7 +23,7 @@ class HomePrincipalFunctions {
   List<String> listDownloads = [];
   List<String> listFavorite = [];
 
-  Future homeFunctionPrincipal(
+  Future favoritePrincipalFunction(
       GlobalsStore globalsStore, HomeStore homeStore) async {
     final response = await GlobalsLocalStorage().getDownloads();
     final favorite = await GlobalsLocalStorage().getFavorite();

@@ -16,11 +16,11 @@ import '../../globals/store/globals_store.dart';
 import '../../globals/theme_controller.dart';
 import '../../modals/modal_livro.dart';
 
-class HomeWidget {
-  HomeWidget(this.context);
+class FavoriteWidget {
+  FavoriteWidget(this.context);
   BuildContext context;
 
-  Widget homePerfilPrincipal(BuildContext contextAux) {
+  Widget favoritePricipal(BuildContext contextAux) {
     final homeStore = Provider.of<HomeStore>(context);
     return ListView(
       shrinkWrap: true,
