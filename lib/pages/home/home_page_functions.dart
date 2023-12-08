@@ -109,7 +109,7 @@ class HomePrincipalFunctions {
     String path = appDocDir!.path + '/${livro?.id}' + '.epub';
     File file = File(path);
 
-    if (livro?.localDirectory == null || livro?.localDirectory == '') {
+    if (!listDownloads.contains(livro?.id.toString())) {
       await file.create();
       try {
         await dio
