@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:leitor_ebooks/pages/favorite/favorites_page_functions.dart';
+import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:leitor_ebooks/pages/home/home_page_functions.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:leitor_ebooks/pages/tabBar/tab_principal.dart';
@@ -10,11 +12,20 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        //Providers
         Provider<HomePrincipalFunctions>(
           create: (context) => HomePrincipalFunctions(context),
         ),
+        Provider<FavoritePrincipaFunctions>(
+          create: (context) => FavoritePrincipaFunctions(context),
+        ),
+
+        //Store
         Provider<HomeStore>(
           create: (context) => HomeStore(),
+        ),
+        Provider<FavoriteStore>(
+          create: (context) => FavoriteStore(),
         ),
         Provider<GlobalsStore>(
           create: (context) => GlobalsStore(),

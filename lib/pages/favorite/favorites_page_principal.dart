@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:leitor_ebooks/globals/globals_widgets.dart';
-import 'package:leitor_ebooks/pages/home/home_page_widget.dart';
+import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +24,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   late GlobalsThemeVar globalsThemeVar;
   late FavoritePrincipaFunctions favoritePrincipalFunction;
   late GlobalsStore globalsStore;
+  late FavoriteStore favoriteStore;
   late HomeStore homeStore;
   bool entrouIniciaPage = false;
   bool carregando = true;
@@ -33,6 +34,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     favoritePrincipalFunction = Provider.of<FavoritePrincipaFunctions>(context);
     globalsStore = Provider.of<GlobalsStore>(context);
     globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
+    favoriteStore = Provider.of<FavoriteStore>(context);
     homeStore = Provider.of<HomeStore>(context);
     if (!entrouIniciaPage) {
       _iniciaPage();
@@ -44,7 +46,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Future _iniciaPage() async {
     entrouIniciaPage = true;
     await favoritePrincipalFunction.favoritePrincipalFunction(
-        globalsStore, homeStore);
+        globalsStore, favoriteStore, homeStore);
     if (!mounted) return;
     setState(() {
       carregando = false;

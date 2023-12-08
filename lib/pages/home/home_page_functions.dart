@@ -25,6 +25,8 @@ class HomePrincipalFunctions {
 
   Future homeFunctionPrincipal(
       GlobalsStore globalsStore, HomeStore homeStore) async {
+    listFavorite.clear();
+    listDownloads.clear();
     final response = await GlobalsLocalStorage().getDownloads();
     final favorite = await GlobalsLocalStorage().getFavorite();
     listFavorite.addAll(favorite ?? []);

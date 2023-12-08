@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:leitor_ebooks/globals/globals_local_storage.dart';
+import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
-import 'package:leitor_ebooks/request/livros/getAllLivros.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../globals/store/globals_store.dart';
@@ -15,31 +15,27 @@ class FavoritePrincipaFunctions {
   BuildContext context;
   FavoritePrincipaFunctions(this.context);
 
-  late HomeStore homeStoreAux;
-  late GlobalsStore globalsStoreAux;
   bool loading = false;
   Dio dio = Dio();
   String filePath = "";
   List<String> listDownloads = [];
   List<String> listFavorite = [];
 
-  Future favoritePrincipalFunction(
-      GlobalsStore globalsStore, HomeStore homeStore) async {
+  Future favoritePrincipalFunction(GlobalsStore globalsStore,
+      FavoriteStore favoriteStore, HomeStore homeStore) async {
+    favoriteStore.setListModelFavoriteMobXClear();
+    listFavorite.clear();
+    listDownloads.clear();
     final response = await GlobalsLocalStorage().getDownloads();
     final favorite = await GlobalsLocalStorage().getFavorite();
     listFavorite.addAll(favorite ?? []);
     listDownloads.addAll(response ?? []);
-    globalsStoreAux = globalsStore;
-    homeStoreAux = homeStore;
-    if (homeStore.listModelMobX.isEmpty) {
-      try {
-        var result = await GetAllLivros().getLivros(context);
-        if (result != null) {
-          await result.forEach((value) {
-            homeStore.setListModelMobX(LivrosModal.fromJson(value));
-          });
+    for (var element in homeStore.listModelMobX) {
+      for (var favorite in listFavorite) {
+        if (element.downloadUrl == favorite) {
+          favoriteStore.setListModelFavoriteMobX(element);
         }
-      } catch (e) {}
+      }
     }
   }
 
@@ -88,16 +84,14 @@ class FavoritePrincipaFunctions {
 
     if (!File(path).existsSync()) {
       await file.create();
-      await dio.download(
+      await dio
+          .download(
         livro?.downloadUrl ?? '',
         path,
         deleteOnError: true,
-        onReceiveProgress: (receivedBytes, totalBytes) {
-          livro?.setLoading(true);
-          double progress = receivedBytes / totalBytes;
-          homeStoreAux.setProgress(progress);
-        },
-      ).whenComplete(() async {
+        onReceiveProgress: (receivedBytes, totalBytes) {},
+      )
+          .whenComplete(() async {
         listDownloads.add(livro?.downloadUrl ?? '');
         await GlobalsLocalStorage().setDawmloads(listDownloads: listDownloads);
         livro?.setLocalDirectory(path);

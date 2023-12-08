@@ -120,6 +120,38 @@ mixin _$LivrosModal on _LivrosModalBase, Store {
     });
   }
 
+  late final _$localDirectoryAtom =
+      Atom(name: '_LivrosModalBase.localDirectory', context: context);
+
+  @override
+  String? get localDirectory {
+    _$localDirectoryAtom.reportRead();
+    return super.localDirectory;
+  }
+
+  @override
+  set localDirectory(String? value) {
+    _$localDirectoryAtom.reportWrite(value, super.localDirectory, () {
+      super.localDirectory = value;
+    });
+  }
+
+  late final _$isDownloadOkAtom =
+      Atom(name: '_LivrosModalBase.isDownloadOk', context: context);
+
+  @override
+  bool? get isDownloadOk {
+    _$isDownloadOkAtom.reportRead();
+    return super.isDownloadOk;
+  }
+
+  @override
+  set isDownloadOk(bool? value) {
+    _$isDownloadOkAtom.reportWrite(value, super.isDownloadOk, () {
+      super.isDownloadOk = value;
+    });
+  }
+
   late final _$_LivrosModalBaseActionController =
       ActionController(name: '_LivrosModalBase', context: context);
 
@@ -201,6 +233,28 @@ mixin _$LivrosModal on _LivrosModalBase, Store {
   }
 
   @override
+  void setLocalDirectory(String? value) {
+    final _$actionInfo = _$_LivrosModalBaseActionController.startAction(
+        name: '_LivrosModalBase.setLocalDirectory');
+    try {
+      return super.setLocalDirectory(value);
+    } finally {
+      _$_LivrosModalBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsDownloadOk(bool? value) {
+    final _$actionInfo = _$_LivrosModalBaseActionController.startAction(
+        name: '_LivrosModalBase.setIsDownloadOk');
+    try {
+      return super.setIsDownloadOk(value);
+    } finally {
+      _$_LivrosModalBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 id: ${id},
@@ -209,7 +263,9 @@ author: ${author},
 coverUrl: ${coverUrl},
 downloadUrl: ${downloadUrl},
 favorite: ${favorite},
-loading: ${loading}
+loading: ${loading},
+localDirectory: ${localDirectory},
+isDownloadOk: ${isDownloadOk}
     ''';
   }
 }

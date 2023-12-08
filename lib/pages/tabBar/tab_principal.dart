@@ -10,6 +10,7 @@ import '../../globals/globals_text.dart';
 import '../../globals/globals_widgets.dart';
 import '../../globals/globlas_alert.dart';
 import '../../globals/theme_controller.dart';
+import '../favorite/favorites_page_principal.dart';
 import '../home/home_page_principal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -124,9 +125,7 @@ class _TabBarPrincipalState extends State<TabBarPrincipal> {
               child: TabBarView(
                 children: <Widget>[
                   HomePage(),
-                  Center(
-                    child: Text("It's rainy here"),
-                  ),
+                  FavoritesPage(),
                 ],
               ),
             ),

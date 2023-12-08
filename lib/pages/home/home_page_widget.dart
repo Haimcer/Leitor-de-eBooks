@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter/material.dart';
@@ -25,27 +23,29 @@ class HomeWidget {
     return ListView(
       shrinkWrap: true,
       children: [
-        Container(
-          margin: EdgeInsets.only(
-            left: GlobalsSizes().marginSize,
-            right: GlobalsSizes().marginSize,
-            top: GlobalsSizes().marginSize / 3,
-          ),
-          height: MediaQuery.of(context).size.height,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: 0.5,
-            ),
-            itemCount: homeStore.listModelMobX.length,
-            itemBuilder: (context, index) {
-              return _buildLivroCard(
-                  homeStore.listModelMobX[index], contextAux);
-            },
-          ),
-        ),
+        homeStore.listModelMobX.isEmpty
+            ? GlobalsWidgets(context).imgEmpty()
+            : Container(
+                margin: EdgeInsets.only(
+                  left: GlobalsSizes().marginSize,
+                  right: GlobalsSizes().marginSize,
+                  top: GlobalsSizes().marginSize / 3,
+                ),
+                height: MediaQuery.of(context).size.height / 1.4,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 0.5,
+                  ),
+                  itemCount: homeStore.listModelMobX.length,
+                  itemBuilder: (context, index) {
+                    return _buildLivroCard(
+                        homeStore.listModelMobX[index], contextAux);
+                  },
+                ),
+              ),
       ],
     );
   }
@@ -82,12 +82,7 @@ class HomeWidget {
               if (livro.isDownloadOk ?? false) {
                 VocsyEpub.open(
                   livro.localDirectory ?? '',
-                  lastLocation: EpubLocator.fromJson({
-                    "bookId": "2239",
-                    "href": "/OEBPS/ch06.xhtml",
-                    "created": 1539934158390,
-                    "locations": {"cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"}
-                  }),
+                  lastLocation: null,
                 );
               }
             }
@@ -100,6 +95,7 @@ class HomeWidget {
           },
           child: Container(
             child: Card(
+              color: globalsThemeVar.iGlobalsColors.tertiaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(GlobalsSizes().borderSize),
               ),

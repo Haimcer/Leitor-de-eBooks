@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter/material.dart';
@@ -7,59 +5,62 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:leitor_ebooks/globals/globals_local_storage.dart';
 import 'package:leitor_ebooks/globals/globals_styles.dart';
 import 'package:leitor_ebooks/globals/globals_widgets.dart';
-import 'package:leitor_ebooks/pages/home/home_page_functions.dart';
-import 'package:leitor_ebooks/pages/home/store/home_store.dart';
+import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:provider/provider.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import '../../globals/globals_sizes.dart';
 import '../../globals/store/globals_store.dart';
 import '../../globals/theme_controller.dart';
 import '../../modals/modal_livro.dart';
+import 'favorites_page_functions.dart';
 
 class FavoriteWidget {
   FavoriteWidget(this.context);
   BuildContext context;
 
   Widget favoritePricipal(BuildContext contextAux) {
-    final homeStore = Provider.of<HomeStore>(context);
+    final favoriteStore = Provider.of<FavoriteStore>(context);
     return ListView(
       shrinkWrap: true,
       children: [
-        Container(
-          margin: EdgeInsets.only(
-            left: GlobalsSizes().marginSize,
-            right: GlobalsSizes().marginSize,
-            top: GlobalsSizes().marginSize / 3,
-          ),
-          height: MediaQuery.of(context).size.height,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8.0,
-              mainAxisSpacing: 8.0,
-              childAspectRatio: 0.5,
-            ),
-            itemCount: homeStore.listModelMobX.length,
-            itemBuilder: (context, index) {
-              return _buildLivroCard(
-                  homeStore.listModelMobX[index], contextAux);
-            },
-          ),
-        ),
+        favoriteStore.listModelFavoriteMobX.isEmpty
+            ? GlobalsWidgets(context).imgEmpty()
+            : Container(
+                margin: EdgeInsets.only(
+                  left: GlobalsSizes().marginSize,
+                  right: GlobalsSizes().marginSize,
+                  top: GlobalsSizes().marginSize / 3,
+                ),
+                height: MediaQuery.of(context).size.height / 1.4,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 0.5,
+                  ),
+                  itemCount: favoriteStore.listModelFavoriteMobX.length,
+                  itemBuilder: (context, index) {
+                    return _buildLivroCard(
+                        favoriteStore.listModelFavoriteMobX[index], contextAux);
+                  },
+                ),
+              ),
       ],
     );
   }
 
   Widget _buildLivroCard(LivrosModal livro, BuildContext contextAux) {
-    final homePrincipalFunctions = Provider.of<HomePrincipalFunctions>(context);
     final globalsStore = Provider.of<GlobalsStore>(context);
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
+    final favoritePrincipalFunction =
+        Provider.of<FavoritePrincipaFunctions>(context);
 
     return Observer(builder: (_) {
       livro.setIsDownloadOk(
-          homePrincipalFunctions.listDownloads.contains(livro.downloadUrl));
+          favoritePrincipalFunction.listDownloads.contains(livro.downloadUrl));
       livro.setFavorite(
-          homePrincipalFunctions.listFavorite.contains(livro.downloadUrl));
+          favoritePrincipalFunction.listFavorite.contains(livro.downloadUrl));
       return IgnorePointer(
         ignoring: livro.loading ?? false,
         child: GestureDetector(
@@ -67,7 +68,7 @@ class FavoriteWidget {
             livro.setLoading(true);
             final result = await GlobalsLocalStorage()
                 .getLocalDirectory(livro.downloadUrl ?? '');
-            await homePrincipalFunctions.download(livro);
+            await favoritePrincipalFunction.download(livro);
 
             if (!globalsStore.loading) {
               VocsyEpub.setConfig(
@@ -82,12 +83,7 @@ class FavoriteWidget {
               if (livro.isDownloadOk ?? false) {
                 VocsyEpub.open(
                   livro.localDirectory ?? '',
-                  lastLocation: EpubLocator.fromJson({
-                    "bookId": "2239",
-                    "href": "/OEBPS/ch06.xhtml",
-                    "created": 1539934158390,
-                    "locations": {"cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"}
-                  }),
+                  lastLocation: null,
                 );
               }
             }
@@ -100,6 +96,7 @@ class FavoriteWidget {
           },
           child: Container(
             child: Card(
+              color: globalsThemeVar.iGlobalsColors.tertiaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(GlobalsSizes().borderSize),
               ),
@@ -165,17 +162,17 @@ class FavoriteWidget {
                                 onTap: () async {
                                   if (livro.favorite ?? false) {
                                     livro.setFavorite(false);
-                                    homePrincipalFunctions.listFavorite
+                                    favoritePrincipalFunction.listFavorite
                                         .remove(livro.downloadUrl ?? '');
                                     await GlobalsLocalStorage().setFavorite(
-                                        listFavorite: homePrincipalFunctions
+                                        listFavorite: favoritePrincipalFunction
                                             .listFavorite);
                                   } else {
                                     livro.setFavorite(true);
-                                    homePrincipalFunctions.listFavorite
+                                    favoritePrincipalFunction.listFavorite
                                         .add(livro.downloadUrl ?? '');
                                     await GlobalsLocalStorage().setFavorite(
-                                        listFavorite: homePrincipalFunctions
+                                        listFavorite: favoritePrincipalFunction
                                             .listFavorite);
                                   }
                                 },
