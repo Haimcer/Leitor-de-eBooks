@@ -25,7 +25,7 @@ Este aplicativo de leitura de eBooks oferece uma experiência interativa e fáci
 
 ## Histórico de Commits
 
-- Veja o [histórico de commits](https://github.com/Haymcer/Leitor-de-eBooks/commits/main) para acompanhar as mudanças no código.
+- Veja o [histórico de commits]([https://github.com/Haymcer/Leitor-de-eBooks/commits/main](https://github.com/Haimcer/Leitor-de-eBooks/commits/main)) para acompanhar as mudanças no código.
 
 ## APK para Testes
 
