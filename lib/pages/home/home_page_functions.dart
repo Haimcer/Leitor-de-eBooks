@@ -109,7 +109,7 @@ class HomePrincipalFunctions {
     String path = appDocDir!.path + '/${livro?.id}' + '.epub';
     File file = File(path);
 
-    if (!File(path).existsSync()) {
+    if (livro?.localDirectory == null || livro?.localDirectory == '') {
       await file.create();
       try {
         await dio
@@ -126,14 +126,20 @@ class HomePrincipalFunctions {
           livro?.setLocalDirectory(path);
           livro?.setIsDownloadOk(true);
         }).catchError((error) {
-          GlobalsAlert(contextAux).alertError(contextAux);
+          GlobalsAlert(contextAux).alertError(contextAux,
+              text:
+                  'Ops! tivemos problemas para baixar esse livro, tente novamente!');
+          livro?.setLocalDirectory(null);
           livro?.setLoading(false);
-        }).timeout(const Duration(seconds: 30), onTimeout: () {
-          GlobalsAlert(contextAux).alertError(contextAux);
+        }).timeout(const Duration(seconds: 60), onTimeout: () {
+          GlobalsAlert(contextAux).alertError(contextAux,
+              text: 'Tempo para download excedido, por favor tente novamente!');
+          livro?.setLocalDirectory(null);
           livro?.setLoading(false);
         });
       } catch (e) {
         GlobalsAlert(contextAux).alertError(contextAux);
+        livro?.setLocalDirectory(null);
       }
     } else {
       livro?.setLocalDirectory(path);
