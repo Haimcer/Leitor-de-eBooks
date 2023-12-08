@@ -16,7 +16,7 @@ Este aplicativo de leitura de eBooks oferece uma experiência interativa e fáci
 
 - `/lib`
   - `/pages`
-  - `/home`
+- `/home`
     - `/store`
       - `home_store.dart` (Funcionalidade MobX)
    - `home_page_principal.dart` (Página principal)
