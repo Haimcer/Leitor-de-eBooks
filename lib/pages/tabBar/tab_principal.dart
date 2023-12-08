@@ -75,61 +75,75 @@ class _TabBarPrincipalState extends State<TabBarPrincipal> {
     });
   }
 
+  Future<bool?> exibirMensagem() => GlobalsAlert(context).alertDesejaSair(
+        context,
+        title: 'Deseja mesmo sair ?',
+        onTap: () {
+          SystemNavigator.pop();
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
     double appBarHeight = MediaQuery.of(context).size.height / 4;
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 2,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(appBarHeight),
-          child: GlobalsWidgets(context)
-              .appBarDescTitulo(context, titulo: GlobalsText().titleText),
-        ),
-        body: Column(
-          children: [
-            TabBar(
-              indicatorColor: globalsThemeVar.iGlobalsColors.primaryColor,
-              tabs: <Widget>[
-                Tab(
-                  icon: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(FontAwesomeIcons.bookOpen,
-                          size: GlobalsSizes().sizeSubtitulo,
-                          color: globalsThemeVar.iGlobalsColors.primaryColor),
-                      Text('Biblioteca',
-                          style: GlobalsStyles(context).styleSubtitle),
-                    ],
+    return WillPopScope(
+      onWillPop: () async {
+        final sair = await exibirMensagem();
+        return sair ?? true;
+      },
+      child: DefaultTabController(
+        initialIndex: 0,
+        length: 2,
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(appBarHeight),
+            child: GlobalsWidgets(context)
+                .appBarDescTitulo(context, titulo: GlobalsText().titleText),
+          ),
+          body: Column(
+            children: [
+              TabBar(
+                indicatorColor: globalsThemeVar.iGlobalsColors.primaryColor,
+                tabs: <Widget>[
+                  Tab(
+                    icon: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(FontAwesomeIcons.bookOpen,
+                            size: GlobalsSizes().sizeSubtitulo,
+                            color: globalsThemeVar.iGlobalsColors.primaryColor),
+                        Text('Biblioteca',
+                            style: GlobalsStyles(context).styleSubtitle),
+                      ],
+                    ),
                   ),
-                ),
-                Tab(
-                  icon: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(FontAwesomeIcons.bookBookmark,
-                          size: GlobalsSizes().sizeSubtitulo,
-                          color: globalsThemeVar.iGlobalsColors.primaryColor),
-                      Text('Favoritos',
-                          style: GlobalsStyles(context).styleSubtitle),
-                    ],
+                  Tab(
+                    icon: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(FontAwesomeIcons.bookBookmark,
+                            size: GlobalsSizes().sizeSubtitulo,
+                            color: globalsThemeVar.iGlobalsColors.primaryColor),
+                        Text('Favoritos',
+                            style: GlobalsStyles(context).styleSubtitle),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const Expanded(
-              child: TabBarView(
-                children: <Widget>[
-                  HomePage(),
-                  FavoritesPage(),
                 ],
               ),
-            ),
-          ],
+              const Expanded(
+                child: TabBarView(
+                  children: <Widget>[
+                    HomePage(),
+                    FavoritesPage(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

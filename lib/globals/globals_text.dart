@@ -1,3 +1,3 @@
 class GlobalsText {
-  String titleText = 'Principal';
+  String titleText = 'Estante de livros';
 }

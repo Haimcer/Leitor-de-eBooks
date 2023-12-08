@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:leitor_ebooks/globals/globals_functions.dart';
 import 'package:leitor_ebooks/globals/globals_local_storage.dart';
 import 'package:leitor_ebooks/globals/globals_styles.dart';
 import 'package:leitor_ebooks/globals/globals_widgets.dart';
+import 'package:leitor_ebooks/globals/globlas_alert.dart';
 import 'package:leitor_ebooks/pages/home/home_page_functions.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +66,12 @@ class HomeWidget {
         ignoring: livro.loading ?? false,
         child: GestureDetector(
           onTap: () async {
+            if (livro.isDownloadOk == false) {
+              if (await GlobalsFunctions().verificaConexao()) {
+                GlobalsAlert(context).alertInternet(context);
+                return;
+              }
+            }
             livro.setLoading(true);
             final result = await GlobalsLocalStorage()
                 .getLocalDirectory(livro.downloadUrl ?? '');

@@ -8,7 +8,9 @@ import 'package:leitor_ebooks/globals/globals_widgets.dart';
 import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:provider/provider.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
+import '../../globals/globals_functions.dart';
 import '../../globals/globals_sizes.dart';
+import '../../globals/globlas_alert.dart';
 import '../../globals/store/globals_store.dart';
 import '../../globals/theme_controller.dart';
 import '../../modals/modal_livro.dart';
@@ -65,6 +67,12 @@ class FavoriteWidget {
         ignoring: livro.loading ?? false,
         child: GestureDetector(
           onTap: () async {
+            if (livro.isDownloadOk == false) {
+              if (await GlobalsFunctions().verificaConexao()) {
+                GlobalsAlert(context).alertInternet(context);
+                return;
+              }
+            }
             livro.setLoading(true);
             final result = await GlobalsLocalStorage()
                 .getLocalDirectory(livro.downloadUrl ?? '');

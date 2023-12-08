@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'theme_controller.dart';
 
@@ -44,7 +45,7 @@ class GlobalsAlert {
         cancelBtnText: cancelBtnText ?? "Cancelar",
         onCancelBtnTap: onTapCancel ??
             () {
-              Navigator.of(contextAux, rootNavigator: true).pop();
+              SystemNavigator.pop();
             },
         confirmBtnText: confirmBtnText ?? "Ok",
         backgroundColor: globalsThemeVar.iGlobalsColors.textColorFraco,

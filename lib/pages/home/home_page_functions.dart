@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:leitor_ebooks/globals/globals_local_storage.dart';
+import 'package:leitor_ebooks/globals/globlas_alert.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:leitor_ebooks/request/livros/getAllLivros.dart';
 import 'package:path_provider/path_provider.dart';
@@ -90,21 +91,26 @@ class HomePrincipalFunctions {
 
     if (!File(path).existsSync()) {
       await file.create();
-      await dio.download(
-        livro?.downloadUrl ?? '',
-        path,
-        deleteOnError: true,
-        onReceiveProgress: (receivedBytes, totalBytes) {
-          livro?.setLoading(true);
-          double progress = receivedBytes / totalBytes;
-          homeStoreAux.setProgress(progress);
-        },
-      ).whenComplete(() async {
-        listDownloads.add(livro?.downloadUrl ?? '');
-        await GlobalsLocalStorage().setDawmloads(listDownloads: listDownloads);
-        livro?.setLocalDirectory(path);
-        // livro?.setLoading(false);
-      });
+      try {
+        await dio.download(
+          livro?.downloadUrl ?? '',
+          path,
+          deleteOnError: true,
+          onReceiveProgress: (receivedBytes, totalBytes) {
+            livro?.setLoading(true);
+            double progress = receivedBytes / totalBytes;
+            homeStoreAux.setProgress(progress);
+          },
+        ).whenComplete(() async {
+          listDownloads.add(livro?.downloadUrl ?? '');
+          await GlobalsLocalStorage()
+              .setDawmloads(listDownloads: listDownloads);
+          livro?.setLocalDirectory(path);
+          // livro?.setLoading(false);
+        });
+      } catch (e) {
+        GlobalsAlert(context).alertError(context);
+      }
     } else {
       livro?.setLocalDirectory(path);
       // livro?.setLoading(false);

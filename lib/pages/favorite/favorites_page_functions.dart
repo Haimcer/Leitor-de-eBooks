@@ -8,6 +8,7 @@ import 'package:leitor_ebooks/pages/favorite/store/favorite_store.dart';
 import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../globals/globlas_alert.dart';
 import '../../globals/store/globals_store.dart';
 import '../../modals/modal_livro.dart';
 
@@ -84,19 +85,24 @@ class FavoritePrincipaFunctions {
 
     if (!File(path).existsSync()) {
       await file.create();
-      await dio
-          .download(
-        livro?.downloadUrl ?? '',
-        path,
-        deleteOnError: true,
-        onReceiveProgress: (receivedBytes, totalBytes) {},
-      )
-          .whenComplete(() async {
-        listDownloads.add(livro?.downloadUrl ?? '');
-        await GlobalsLocalStorage().setDawmloads(listDownloads: listDownloads);
-        livro?.setLocalDirectory(path);
-        // livro?.setLoading(false);
-      });
+      try {
+        await dio
+            .download(
+          livro?.downloadUrl ?? '',
+          path,
+          deleteOnError: true,
+          onReceiveProgress: (receivedBytes, totalBytes) {},
+        )
+            .whenComplete(() async {
+          listDownloads.add(livro?.downloadUrl ?? '');
+          await GlobalsLocalStorage()
+              .setDawmloads(listDownloads: listDownloads);
+          livro?.setLocalDirectory(path);
+          // livro?.setLoading(false);
+        });
+      } catch (e) {
+        GlobalsAlert(context).alertError(context);
+      }
     } else {
       livro?.setLocalDirectory(path);
       // livro?.setLoading(false);
