@@ -22,14 +22,4 @@ class GlobalsLocalStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('Downloads', listDownloads);
   }
-
-  Future<void> setLocalDirectory(String key, String value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value);
-  }
-
-  Future<String?> getLocalDirectory(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
-  }
 }

@@ -1,49 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:leitor_ebooks/globals/theme_controller.dart';
-import 'package:provider/provider.dart';
 import 'globals_sizes.dart';
 import 'globals_widgets.dart';
 
 class GlobalsButtons {
   BuildContext context;
   GlobalsButtons(this.context);
-
-  Widget btnVoltarFundo(BuildContext _context,
-      {Color? corFundo,
-      Color? corIcon,
-      VoidCallback? onTap,
-      IconData? icon,
-      double? paddingAll}) {
-    final globalsThemeVar = Provider.of<GlobalsThemeVar>(_context);
-    return GestureDetector(
-      onTap: onTap ??
-          () {
-            Navigator.pop(_context);
-          },
-      child: Container(
-        padding: EdgeInsets.only(
-          left: paddingAll ?? 8,
-          bottom: paddingAll ?? 8,
-          right: paddingAll ?? 8,
-          top: paddingAll ?? 8,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(
-              GlobalsSizes().borderSize,
-            ),
-          ),
-          color: corFundo ?? globalsThemeVar.iGlobalsColors.primaryColor,
-        ),
-        child: Icon(
-          icon ?? Icons.arrow_back_ios,
-          color:
-              corIcon ?? globalsThemeVar.iGlobalsColors.textColorPrimaryInverse,
-          size: GlobalsSizes().sizeTitulo,
-        ),
-      ),
-    );
-  }
 
   // BOTAO GLOBAL
   //

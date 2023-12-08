@@ -12,7 +12,6 @@ import 'package:leitor_ebooks/pages/home/store/home_store.dart';
 import 'package:provider/provider.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import '../../globals/globals_sizes.dart';
-import '../../globals/store/globals_store.dart';
 import '../../globals/theme_controller.dart';
 import '../../modals/modal_livro.dart';
 
@@ -54,7 +53,6 @@ class HomeWidget {
 
   Widget _buildLivroCard(LivrosModal livro, BuildContext contextAux) {
     final homePrincipalFunctions = Provider.of<HomePrincipalFunctions>(context);
-    final globalsStore = Provider.of<GlobalsStore>(context);
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
 
     return Observer(builder: (_) {
@@ -73,29 +71,28 @@ class HomeWidget {
               }
             }
             livro.setLoading(true);
-            final result = await GlobalsLocalStorage()
-                .getLocalDirectory(livro.downloadUrl ?? '');
             await homePrincipalFunctions.download(livro);
 
-            if (!globalsStore.loading) {
-              VocsyEpub.setConfig(
-                themeColor: Theme.of(context).primaryColor,
-                identifier: 'isbook',
-                scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-                allowSharing: true,
-                enableTts: true,
-                nightMode: true,
-              );
+            VocsyEpub.setConfig(
+              themeColor: Theme.of(context).primaryColor,
+              identifier: 'isbook',
+              scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+              allowSharing: true,
+              enableTts: true,
+              nightMode: globalsThemeVar.currentThemeMode == ThemeMode.light
+                  ? false
+                  : true,
+            );
 
-              if (livro.isDownloadOk ?? false) {
-                VocsyEpub.open(
-                  livro.localDirectory ?? '',
-                  lastLocation: null,
-                );
-              }
+            if (livro.isDownloadOk ?? false) {
+              VocsyEpub.open(
+                livro.localDirectory ?? '',
+                lastLocation: null,
+              );
             }
+
             livro.setLoading(false);
-            if (result != '') {
+            if (livro.localDirectory != null || livro.localDirectory != '') {
               livro.setIsDownloadOk(true);
             } else {
               livro.setIsDownloadOk(false);

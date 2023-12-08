@@ -25,12 +25,8 @@ class FavoritePrincipaFunctions {
   Future favoritePrincipalFunction(GlobalsStore globalsStore,
       FavoriteStore favoriteStore, HomeStore homeStore) async {
     favoriteStore.setListModelFavoriteMobXClear();
-    listFavorite.clear();
-    listDownloads.clear();
-    final response = await GlobalsLocalStorage().getDownloads();
-    final favorite = await GlobalsLocalStorage().getFavorite();
-    listFavorite.addAll(favorite ?? []);
-    listDownloads.addAll(response ?? []);
+    await _loadDownloadsAndFavorites();
+
     for (var element in homeStore.listModelMobX) {
       for (var favorite in listFavorite) {
         if (element.downloadUrl == favorite) {
@@ -38,6 +34,15 @@ class FavoritePrincipaFunctions {
         }
       }
     }
+  }
+
+  Future<void> _loadDownloadsAndFavorites() async {
+    listFavorite.clear();
+    listDownloads.clear();
+    final response = await GlobalsLocalStorage().getDownloads();
+    final favorite = await GlobalsLocalStorage().getFavorite();
+    listFavorite.addAll(favorite ?? []);
+    listDownloads.addAll(response ?? []);
   }
 
   /// ANDROID VERSION
@@ -98,14 +103,12 @@ class FavoritePrincipaFunctions {
           await GlobalsLocalStorage()
               .setDawmloads(listDownloads: listDownloads);
           livro?.setLocalDirectory(path);
-          // livro?.setLoading(false);
         });
       } catch (e) {
         GlobalsAlert(context).alertError(context);
       }
     } else {
       livro?.setLocalDirectory(path);
-      // livro?.setLoading(false);
     }
   }
 

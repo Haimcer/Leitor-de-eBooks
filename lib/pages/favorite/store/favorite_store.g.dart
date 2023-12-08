@@ -9,22 +9,6 @@ part of 'favorite_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$FavoriteStore on _FavoriteStore, Store {
-  late final _$filepathAtom =
-      Atom(name: '_FavoriteStore.filepath', context: context);
-
-  @override
-  String get filepath {
-    _$filepathAtom.reportRead();
-    return super.filepath;
-  }
-
-  @override
-  set filepath(String value) {
-    _$filepathAtom.reportWrite(value, super.filepath, () {
-      super.filepath = value;
-    });
-  }
-
   late final _$listModelFavoriteMobXAtom =
       Atom(name: '_FavoriteStore.listModelFavoriteMobX', context: context);
 
@@ -44,17 +28,6 @@ mixin _$FavoriteStore on _FavoriteStore, Store {
 
   late final _$_FavoriteStoreActionController =
       ActionController(name: '_FavoriteStore', context: context);
-
-  @override
-  void setFilePath(String newPath) {
-    final _$actionInfo = _$_FavoriteStoreActionController.startAction(
-        name: '_FavoriteStore.setFilePath');
-    try {
-      return super.setFilePath(newPath);
-    } finally {
-      _$_FavoriteStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   void setAllListFavoriteMobX(List<LivrosModal> list) {
@@ -103,7 +76,6 @@ mixin _$FavoriteStore on _FavoriteStore, Store {
   @override
   String toString() {
     return '''
-filepath: ${filepath},
 listModelFavoriteMobX: ${listModelFavoriteMobX}
     ''';
   }

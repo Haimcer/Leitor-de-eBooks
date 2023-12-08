@@ -8,19 +8,7 @@ class HomeStore = _HomeStore with _$HomeStore;
 
 abstract class _HomeStore with Store {
   @observable
-  String filepath = '';
-
-  @observable
-  double progress = 0.0;
-
-  @observable
   ObservableList<LivrosModal> listModelMobX = ObservableList<LivrosModal>();
-
-  @action
-  void setFilePath(String newPath) {
-    print('entrou aqui');
-    filepath = newPath;
-  }
 
   @action
   void setAllListMobX(List<LivrosModal> list) {
@@ -43,10 +31,5 @@ abstract class _HomeStore with Store {
   @action
   void setListModelMobXClear() {
     listModelMobX.clear();
-  }
-
-  @action
-  void setProgress(double value) {
-    progress = value;
   }
 }

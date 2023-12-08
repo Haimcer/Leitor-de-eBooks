@@ -61,56 +61,6 @@ class GlobalsWidgets {
     );
   }
 
-  Widget tituloPageComVoltar(BuildContext contextAux, String text,
-      {Widget? sufixo}) {
-    final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
-    return Row(
-      children: [
-        //barra lateral
-        IconButton(
-            onPressed: () {
-              Navigator.of(contextAux).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: globalsThemeVar.iGlobalsColors.textColorFraco,
-              size: GlobalsSizes().sizeTitulo,
-            )),
-        const SizedBox(
-          width: 12,
-        ),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: globalsThemeVar.iGlobalsColors.textColorFraco,
-                    fontSize: GlobalsSizes().sizeTitulo,
-                    fontWeight: FontWeight.bold,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        sufixo ?? Container()
-      ],
-    );
-  }
-
-  Widget divisoria() {
-    final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
-    return Divider(
-      color: globalsThemeVar.iGlobalsColors.textColorMedio,
-      endIndent: GlobalsSizes().marginSize,
-      indent: GlobalsSizes().marginSize,
-    );
-  }
-
   Widget loading({double? size}) {
     final globalsThemeVar = Provider.of<GlobalsThemeVar>(context);
     return Center(

@@ -8,17 +8,8 @@ class FavoriteStore = _FavoriteStore with _$FavoriteStore;
 
 abstract class _FavoriteStore with Store {
   @observable
-  String filepath = '';
-
-  @observable
   ObservableList<LivrosModal> listModelFavoriteMobX =
       ObservableList<LivrosModal>();
-
-  @action
-  void setFilePath(String newPath) {
-    print('entrou aqui');
-    filepath = newPath;
-  }
 
   @action
   void setAllListFavoriteMobX(List<LivrosModal> list) {

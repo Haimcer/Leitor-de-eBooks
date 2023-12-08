@@ -28,21 +28,33 @@ class HomePrincipalFunctions {
       GlobalsStore globalsStore, HomeStore homeStore) async {
     listFavorite.clear();
     listDownloads.clear();
+    await _loadDownloadsAndFavorites();
+
+    globalsStoreAux = globalsStore;
+    homeStoreAux = homeStore;
+
+    if (homeStore.listModelMobX.isEmpty) {
+      await _fetchLivros(homeStore);
+    }
+  }
+
+  Future<void> _loadDownloadsAndFavorites() async {
     final response = await GlobalsLocalStorage().getDownloads();
     final favorite = await GlobalsLocalStorage().getFavorite();
     listFavorite.addAll(favorite ?? []);
     listDownloads.addAll(response ?? []);
-    globalsStoreAux = globalsStore;
-    homeStoreAux = homeStore;
-    if (homeStore.listModelMobX.isEmpty) {
-      try {
-        var result = await GetAllLivros().getLivros(context);
-        if (result != null) {
-          await result.forEach((value) {
-            homeStore.setListModelMobX(LivrosModal.fromJson(value));
-          });
-        }
-      } catch (e) {}
+  }
+
+  Future<void> _fetchLivros(HomeStore homeStore) async {
+    try {
+      var result = await GetAllLivros().getLivros(context);
+      if (result != null) {
+        result.forEach((value) {
+          homeStore.setListModelMobX(LivrosModal.fromJson(value));
+        });
+      }
+    } catch (e) {
+      print("Erro ao buscar livros: $e");
     }
   }
 
@@ -92,28 +104,24 @@ class HomePrincipalFunctions {
     if (!File(path).existsSync()) {
       await file.create();
       try {
-        await dio.download(
+        await dio
+            .download(
           livro?.downloadUrl ?? '',
           path,
           deleteOnError: true,
-          onReceiveProgress: (receivedBytes, totalBytes) {
-            livro?.setLoading(true);
-            double progress = receivedBytes / totalBytes;
-            homeStoreAux.setProgress(progress);
-          },
-        ).whenComplete(() async {
+          onReceiveProgress: (receivedBytes, totalBytes) {},
+        )
+            .whenComplete(() async {
           listDownloads.add(livro?.downloadUrl ?? '');
           await GlobalsLocalStorage()
               .setDawmloads(listDownloads: listDownloads);
           livro?.setLocalDirectory(path);
-          // livro?.setLoading(false);
         });
       } catch (e) {
         GlobalsAlert(context).alertError(context);
       }
     } else {
       livro?.setLocalDirectory(path);
-      // livro?.setLoading(false);
     }
   }
 
