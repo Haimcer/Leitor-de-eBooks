@@ -16,15 +16,15 @@ Este aplicativo de leitura de eBooks oferece uma experiência interativa e fáci
 
 - `/lib`
   - `/pages`
-- `/home`
-    - `/store`
-      - `home_store.dart` (Funcionalidade MobX)
-   - `home_page_principal.dart` (Página principal)
-   - `home_page_functions.dart` (Funcionalidades da página principal)
-   - `home_page_widgets.dart` (Widgets da página principal)
- - `/favorites`
-    - `favorites_page_principal.dart` (Página de favoritos)
-    - ...
+      - `/home`
+          - `/store`
+            - `home_store.dart` (Funcionalidade MobX)
+         - `home_page_principal.dart` (Página principal)
+         - `home_page_functions.dart` (Funcionalidades da página principal)
+         - `home_page_widgets.dart` (Widgets da página principal)
+       - `/favorites`
+          - `favorites_page_principal.dart` (Página de favoritos)
+          - ...
 
 ## Histórico de Commits
 
