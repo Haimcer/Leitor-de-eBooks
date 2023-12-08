@@ -54,22 +54,29 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
-      body: Stack(
-        //usado para que o carregamento feito depois que a página foi aberta fique sempre por cima
-        children: [
-          SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child:
-                  carregando //verificador para ficar na tela de loading enquanto a pagina esta sendo carregada
-                      ? GlobalsWidgets(context).loading()
-                      : HomeWidget(context).homePerfilPrincipal(context)),
-          Observer(builder: (_) {
-            return Visibility(
-                visible: globalsStore.loading,
-                child: GlobalsWidgets(context).loading());
-          }),
-        ],
+      body: RefreshIndicator(
+        color: globalsThemeVar.iGlobalsColors.primaryColor,
+        onRefresh: () async {
+          await homePrincipalFunctions.homeFunctionPrincipal(
+              globalsStore, homeStore);
+        },
+        child: Stack(
+          //usado para que o carregamento feito depois que a página foi aberta fique sempre por cima
+          children: [
+            SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child:
+                    carregando //verificador para ficar na tela de loading enquanto a pagina esta sendo carregada
+                        ? GlobalsWidgets(context).loading()
+                        : HomeWidget(context).homePerfilPrincipal(context)),
+            Observer(builder: (_) {
+              return Visibility(
+                  visible: globalsStore.loading,
+                  child: GlobalsWidgets(context).loading());
+            }),
+          ],
+        ),
       ),
     );
   }

@@ -55,25 +55,32 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
-      body: Stack(
-        //usado para que o carregamento feito depois que a página foi aberta fique sempre por cima
-        children: [
-          SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child:
-                  carregando //verificador para ficar na tela de loading enquanto a pagina esta sendo carregada
-                      ? GlobalsWidgets(context).loading()
-                      : FavoriteWidget(context).favoritePricipal(context)),
-          Observer(builder: (_) {
-            return Visibility(
-                visible: globalsStore.loading,
-                child: GlobalsWidgets(context).loading());
-          }),
-        ],
+    return RefreshIndicator(
+      color: globalsThemeVar.iGlobalsColors.primaryColor,
+      onRefresh: () async {
+        await favoritePrincipalFunction.favoritePrincipalFunction(
+            globalsStore, favoriteStore, homeStore);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: globalsThemeVar.iGlobalsColors.tertiaryColor,
+        body: Stack(
+          //usado para que o carregamento feito depois que a página foi aberta fique sempre por cima
+          children: [
+            SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child:
+                    carregando //verificador para ficar na tela de loading enquanto a pagina esta sendo carregada
+                        ? GlobalsWidgets(context).loading()
+                        : FavoriteWidget(context).favoritePricipal(context)),
+            Observer(builder: (_) {
+              return Visibility(
+                  visible: globalsStore.loading,
+                  child: GlobalsWidgets(context).loading());
+            }),
+          ],
+        ),
       ),
     );
   }

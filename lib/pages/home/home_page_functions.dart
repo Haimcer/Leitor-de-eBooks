@@ -74,12 +74,18 @@ class HomePrincipalFunctions {
       if (intValue >= 13) {
         await startDownload(livro, contextAux);
       } else {
-        final PermissionStatus status = await Permission.storage.request();
-        if (status == PermissionStatus.granted) {
+        final PermissionStatus status = await Permission.storage.status;
+        if (status.isGranted) {
           await startDownload(livro, contextAux);
-        } else {
-          await Permission.storage.request();
+          return;
         }
+        print('bateu aqui');
+        final PermissionStatus statusFinal = await Permission.storage.request();
+        if (statusFinal.isGranted) {
+          await startDownload(livro, contextAux);
+          return;
+        }
+        livro?.setLoading(false);
       }
     }
   }

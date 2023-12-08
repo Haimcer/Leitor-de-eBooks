@@ -24,6 +24,7 @@ class FavoritePrincipaFunctions {
 
   Future favoritePrincipalFunction(GlobalsStore globalsStore,
       FavoriteStore favoriteStore, HomeStore homeStore) async {
+    print('bateu aqui');
     favoriteStore.setListModelFavoriteMobXClear();
     await _loadDownloadsAndFavorites();
 
@@ -61,12 +62,18 @@ class FavoritePrincipaFunctions {
       if (intValue >= 13) {
         await startDownload(livro, contextAux);
       } else {
-        final PermissionStatus status = await Permission.storage.request();
-        if (status == PermissionStatus.granted) {
+        final PermissionStatus status = await Permission.storage.status;
+        if (status.isGranted) {
           await startDownload(livro, contextAux);
-        } else {
-          await Permission.storage.request();
+          return;
         }
+        print('bateu aqui');
+        final PermissionStatus statusFinal = await Permission.storage.request();
+        if (statusFinal.isGranted) {
+          await startDownload(livro, contextAux);
+          return;
+        }
+        livro?.setLoading(false);
       }
     }
   }
