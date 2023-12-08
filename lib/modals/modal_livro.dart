@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mobx/mobx.dart';
 
 part 'modal_livro.g.dart';
@@ -44,7 +46,7 @@ abstract class _LivrosModalBase with Store {
 
   _LivrosModalBase.fromJson(Map<dynamic, dynamic> json) {
     id = json['id'];
-    title = json['title'];
+    title = utf8.decode(json['title'].runes.toList());
     author = json['author'];
     coverUrl = json['cover_url'];
     downloadUrl = json['download_url'];

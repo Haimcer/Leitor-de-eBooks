@@ -21,19 +21,13 @@ class HomeWidget {
 
   Widget homePerfilPrincipal(BuildContext contextAux) {
     final homeStore = Provider.of<HomeStore>(context);
-    return ListView(
-      shrinkWrap: true,
+    return Column(
       children: [
-        homeStore.listModelMobX.isEmpty
-            ? GlobalsWidgets(context).imgEmpty()
-            : Container(
-                margin: EdgeInsets.only(
-                  left: GlobalsSizes().marginSize,
-                  right: GlobalsSizes().marginSize,
-                  top: GlobalsSizes().marginSize / 3,
-                ),
-                height: MediaQuery.of(context).size.height / 1.4,
-                child: GridView.builder(
+        Expanded(
+          child: homeStore.listModelMobX.isEmpty
+              ? GlobalsWidgets(context).imgEmpty()
+              : GridView.builder(
+                  padding: EdgeInsets.all(GlobalsSizes().marginSize),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8.0,
@@ -46,7 +40,7 @@ class HomeWidget {
                         homeStore.listModelMobX[index], contextAux);
                   },
                 ),
-              ),
+        ),
       ],
     );
   }
@@ -57,9 +51,9 @@ class HomeWidget {
 
     return Observer(builder: (_) {
       livro.setIsDownloadOk(
-          homePrincipalFunctions.listDownloads.contains(livro.downloadUrl));
+          homePrincipalFunctions.listDownloads.contains(livro.id.toString()));
       livro.setFavorite(
-          homePrincipalFunctions.listFavorite.contains(livro.downloadUrl));
+          homePrincipalFunctions.listFavorite.contains(livro.id.toString()));
       return IgnorePointer(
         ignoring: livro.loading ?? false,
         child: GestureDetector(
@@ -71,10 +65,10 @@ class HomeWidget {
               }
             }
             livro.setLoading(true);
-            await homePrincipalFunctions.download(livro);
+            await homePrincipalFunctions.download(livro, context);
 
             VocsyEpub.setConfig(
-              themeColor: Theme.of(context).primaryColor,
+              themeColor: globalsThemeVar.iGlobalsColors.primaryColor,
               identifier: 'isbook',
               scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
               allowSharing: true,
@@ -91,12 +85,7 @@ class HomeWidget {
               );
             }
 
-            livro.setLoading(false);
-            if (livro.localDirectory != null || livro.localDirectory != '') {
-              livro.setIsDownloadOk(true);
-            } else {
-              livro.setIsDownloadOk(false);
-            }
+            // livro.setLoading(false);
           },
           child: Container(
             child: Card(
@@ -112,25 +101,27 @@ class HomeWidget {
                     child: Stack(
                       children: [
                         // Imagem carregada da rede
-                        Container(
-                          height: 500, // Defina a altura desejada
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              topLeft:
-                                  Radius.circular(GlobalsSizes().borderSize),
-                              topRight:
-                                  Radius.circular(GlobalsSizes().borderSize),
+                        Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                      GlobalsSizes().borderSize),
+                                  topRight: Radius.circular(
+                                      GlobalsSizes().borderSize),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: livro.coverUrl ?? '',
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) {
+                                    return GlobalsWidgets(context)
+                                        .loading(size: 25);
+                                  },
+                                ),
+                              ),
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: livro.coverUrl ?? '',
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                // Exibe um widget de erro se houver problemas no carregamento da imagem
-                                return GlobalsWidgets(context)
-                                    .loading(size: 25);
-                              },
-                            ),
-                          ),
+                          ],
                         ),
                         // Máscara escura
                         Opacity(
@@ -167,14 +158,14 @@ class HomeWidget {
                                   if (livro.favorite ?? false) {
                                     livro.setFavorite(false);
                                     homePrincipalFunctions.listFavorite
-                                        .remove(livro.downloadUrl ?? '');
+                                        .remove(livro.id.toString());
                                     await GlobalsLocalStorage().setFavorite(
                                         listFavorite: homePrincipalFunctions
                                             .listFavorite);
                                   } else {
                                     livro.setFavorite(true);
                                     homePrincipalFunctions.listFavorite
-                                        .add(livro.downloadUrl ?? '');
+                                        .add(livro.id.toString());
                                     await GlobalsLocalStorage().setFavorite(
                                         listFavorite: homePrincipalFunctions
                                             .listFavorite);

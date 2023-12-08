@@ -29,7 +29,7 @@ class FavoritePrincipaFunctions {
 
     for (var element in homeStore.listModelMobX) {
       for (var favorite in listFavorite) {
-        if (element.downloadUrl == favorite) {
+        if (element.id.toString() == favorite) {
           favoriteStore.setListModelFavoriteMobX(element);
         }
       }
@@ -46,7 +46,8 @@ class FavoritePrincipaFunctions {
   }
 
   /// ANDROID VERSION
-  Future<void> fetchAndroidVersion(LivrosModal? livro) async {
+  Future<void> fetchAndroidVersion(
+      LivrosModal? livro, BuildContext contextAux) async {
     final String? version = await getAndroidVersion();
     if (version != null) {
       String? firstPart;
@@ -58,11 +59,11 @@ class FavoritePrincipaFunctions {
       }
       int intValue = int.parse(firstPart);
       if (intValue >= 13) {
-        await startDownload(livro ?? LivrosModal());
+        await startDownload(livro, contextAux);
       } else {
         final PermissionStatus status = await Permission.storage.request();
         if (status == PermissionStatus.granted) {
-          await startDownload(livro ?? LivrosModal());
+          await startDownload(livro, contextAux);
         } else {
           await Permission.storage.request();
         }
@@ -81,7 +82,8 @@ class FavoritePrincipaFunctions {
     return null;
   }
 
-  Future<void> startDownload([LivrosModal? livro]) async {
+  Future<void> startDownload(
+      LivrosModal? livro, BuildContext contextAux) async {
     Directory? appDocDir = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
@@ -98,30 +100,38 @@ class FavoritePrincipaFunctions {
           deleteOnError: true,
           onReceiveProgress: (receivedBytes, totalBytes) {},
         )
-            .whenComplete(() async {
-          listDownloads.add(livro?.downloadUrl ?? '');
+            .then((_) async {
+          listDownloads.add(livro?.id.toString() ?? '');
           await GlobalsLocalStorage()
               .setDawmloads(listDownloads: listDownloads);
           livro?.setLocalDirectory(path);
+          livro?.setIsDownloadOk(true);
+        }).catchError((error) {
+          GlobalsAlert(contextAux).alertError(contextAux);
+          livro?.setLoading(false);
+        }).timeout(const Duration(seconds: 30), onTimeout: () {
+          GlobalsAlert(contextAux).alertError(contextAux);
+          livro?.setLoading(false);
         });
       } catch (e) {
-        GlobalsAlert(context).alertError(context);
+        GlobalsAlert(contextAux).alertError(contextAux);
       }
     } else {
       livro?.setLocalDirectory(path);
     }
+    livro?.setLoading(false);
   }
 
-  download(LivrosModal livro) async {
+  download(LivrosModal livro, BuildContext contextAux) async {
     if (Platform.isIOS) {
       final PermissionStatus status = await Permission.storage.request();
       if (status == PermissionStatus.granted) {
-        await startDownload(livro);
+        await startDownload(livro, contextAux);
       } else {
         await Permission.storage.request();
       }
     } else if (Platform.isAndroid) {
-      await fetchAndroidVersion(livro);
+      await fetchAndroidVersion(livro, contextAux);
     } else {
       PlatformException(code: '500');
     }

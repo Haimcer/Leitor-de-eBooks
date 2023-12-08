@@ -21,19 +21,13 @@ class FavoriteWidget {
 
   Widget favoritePricipal(BuildContext contextAux) {
     final favoriteStore = Provider.of<FavoriteStore>(context);
-    return ListView(
-      shrinkWrap: true,
+    return Column(
       children: [
-        favoriteStore.listModelFavoriteMobX.isEmpty
-            ? GlobalsWidgets(context).imgEmpty()
-            : Container(
-                margin: EdgeInsets.only(
-                  left: GlobalsSizes().marginSize,
-                  right: GlobalsSizes().marginSize,
-                  top: GlobalsSizes().marginSize / 3,
-                ),
-                height: MediaQuery.of(context).size.height / 1.4,
-                child: GridView.builder(
+        Expanded(
+          child: favoriteStore.listModelFavoriteMobX.isEmpty
+              ? GlobalsWidgets(context).imgEmpty()
+              : GridView.builder(
+                  padding: EdgeInsets.all(GlobalsSizes().marginSize),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8.0,
@@ -46,7 +40,7 @@ class FavoriteWidget {
                         favoriteStore.listModelFavoriteMobX[index], contextAux);
                   },
                 ),
-              ),
+        ),
       ],
     );
   }
@@ -57,10 +51,10 @@ class FavoriteWidget {
         Provider.of<FavoritePrincipaFunctions>(context);
 
     return Observer(builder: (_) {
-      livro.setIsDownloadOk(
-          favoritePrincipalFunction.listDownloads.contains(livro.downloadUrl));
+      livro.setIsDownloadOk(favoritePrincipalFunction.listDownloads
+          .contains(livro.id.toString()));
       livro.setFavorite(
-          favoritePrincipalFunction.listFavorite.contains(livro.downloadUrl));
+          favoritePrincipalFunction.listFavorite.contains(livro.id.toString()));
       return IgnorePointer(
         ignoring: livro.loading ?? false,
         child: GestureDetector(
@@ -72,7 +66,7 @@ class FavoriteWidget {
               }
             }
             livro.setLoading(true);
-            await favoritePrincipalFunction.download(livro);
+            await favoritePrincipalFunction.download(livro, context);
 
             VocsyEpub.setConfig(
               themeColor: Theme.of(context).primaryColor,
@@ -113,25 +107,28 @@ class FavoriteWidget {
                     child: Stack(
                       children: [
                         // Imagem carregada da rede
-                        Container(
-                          height: 500, // Defina a altura desejada
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              topLeft:
-                                  Radius.circular(GlobalsSizes().borderSize),
-                              topRight:
-                                  Radius.circular(GlobalsSizes().borderSize),
+                        Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                      GlobalsSizes().borderSize),
+                                  topRight: Radius.circular(
+                                      GlobalsSizes().borderSize),
+                                ),
+                                child: CachedNetworkImage(
+                                  imageUrl: livro.coverUrl ?? '',
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) {
+                                    // Exibe um widget de erro se houver problemas no carregamento da imagem
+                                    return GlobalsWidgets(context)
+                                        .loading(size: 25);
+                                  },
+                                ),
+                              ),
                             ),
-                            child: CachedNetworkImage(
-                              imageUrl: livro.coverUrl ?? '',
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                // Exibe um widget de erro se houver problemas no carregamento da imagem
-                                return GlobalsWidgets(context)
-                                    .loading(size: 25);
-                              },
-                            ),
-                          ),
+                          ],
                         ),
                         // Máscara escura
                         Opacity(
@@ -168,14 +165,14 @@ class FavoriteWidget {
                                   if (livro.favorite ?? false) {
                                     livro.setFavorite(false);
                                     favoritePrincipalFunction.listFavorite
-                                        .remove(livro.downloadUrl ?? '');
+                                        .remove(livro.id.toString());
                                     await GlobalsLocalStorage().setFavorite(
                                         listFavorite: favoritePrincipalFunction
                                             .listFavorite);
                                   } else {
                                     livro.setFavorite(true);
                                     favoritePrincipalFunction.listFavorite
-                                        .add(livro.downloadUrl ?? '');
+                                        .add(livro.id.toString());
                                     await GlobalsLocalStorage().setFavorite(
                                         listFavorite: favoritePrincipalFunction
                                             .listFavorite);
